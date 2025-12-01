@@ -2,10 +2,10 @@ import pygame as pg
 from vilao_base import VilaoBase
 from config_jogo import CONFIG
 
-class CaranguejoPirata(VilaoBase):
+class CarangueijoPirata(VilaoBase):
     def __init__(self, x, y):
         # Configurações específicas deste vilão
-        config = CONFIG['viloes']['CaranguejoPirata']
+        config = CONFIG['viloes'].get('CarangueijoPirata', {})
         super().__init__(x=x, y=y, velocidade=config['velocidade'], vida_max=config['vida_max'], forca_pulo=config['forca_pulo'])
 
         # --- Sprites ---

@@ -14,13 +14,13 @@ CONFIG = {
             'habilidades': {
                 'SacoDeMoedas': {
                     'cooldown_s': 0.5,
-                    'dano': 150,
+                    'dano': 200,
                     'velocidade': 10,
                 },
                 'LapadaSeca': {
                     'cooldown_s': 15,
                     'dano': 450,
-                    'velocidade': 7,
+                    'velocidade': 8,
                     'velocidade_rotacao': 30,
                     'distancia_max': 500,
                 },
@@ -32,7 +32,7 @@ CONFIG = {
                     'projetil': {
                         'dano': 30,
                         'velocidade': 6,
-                        'raio': 20,
+                        'raio': 21,
                         'duracao_s': 4,
                     }
                 }
@@ -41,12 +41,19 @@ CONFIG = {
         # Configurações para JoaoPoker e DrPI podem ser adicionadas aqui no futuro.
     },
     'viloes': {
-        'CaranguejoPirata': {
-            'velocidade': 1.8,
-            'vida_max': 1000,
-            'forca_pulo': -18,
-            'raio_deteccao': 400,
-            'dano_contato': 250,
+        'CarangueijoPirata': {
+           'velocidade': 1.8,
+           'vida_max': 1000,
+           'forca_pulo': -18,
+           'raio_deteccao': 400,
+           'dano_contato': 250,
+        },
+        'Morcego': {
+           'velocidade': 2.2,
+           'vida_max': 400,
+           'forca_pulo': 0, # Não pula
+           'raio_deteccao': 600,
+           'dano_contato': 350,
         }
     }
 }

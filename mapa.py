@@ -6,7 +6,8 @@ CHUNK_SIZE = 10  # Número de tiles por chunk horizontal
 TILE_SIZE = 64   # Tamanho de cada tile
 
 # Importa as classes dos vilões para que o mapa possa criá-los
-from viloes.carangueijo_pirata.caranguejo_pirata import CaranguejoPirata
+from viloes.carangueijo_pirata.carangueijo_pirata import CarangueijoPirata
+from viloes.morcego.morcego import Morcego
 
 class Mapa:
     def __init__(self):
@@ -23,7 +24,7 @@ class Mapa:
             "               123 79 45552223                                                                                                                                                  ",
             "          123  789    45555556                                                                                                                                                  ",
             "     1223 456         45555556                                                                                                                                                  ",
-            "22222555525552222222225555555522222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+            "22222555525552222222225555555522222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
         ]
         self.tiles = [list(row) for row in self.tiles]
 
@@ -61,34 +62,39 @@ class Mapa:
         # --- Dados dos Vilões (específico para este mapa) ---
         # No futuro, isso pode ser carregado de um arquivo de mapa (JSON, TMX, etc.)
         self.dados_viloes = [
-            {'tipo': 'CaranguejoPirata', 'x': 800, 'y': 600},
-            {'tipo': 'CaranguejoPirata', 'x': 1200, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 1500, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 1800, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 1900, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2000, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2400, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2500, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2600, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2700, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2800, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 2900, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3000, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3200, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3300, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3400, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3500, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3600, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3700, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3800, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 3900, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 4000, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 4200, 'y': 500},
-            {'tipo': 'CaranguejoPirata', 'x': 4300, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 800, 'y': 600},
+            {'tipo': 'Morcego', 'x': 800, 'y': 450},
+            {'tipo': 'Morcego', 'x': 1200, 'y': 400},
+            {'tipo': 'CarangueijoPirata', 'x': 1200, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 1500, 'y': 500},
+            {'tipo': 'Morcego', 'x': 1800, 'y': 450},
+            {'tipo': 'CarangueijoPirata', 'x': 1900, 'y': 500},
+            {'tipo': 'Morcego', 'x': 2000, 'y': 500},
+            {'tipo': 'Morcego', 'x': 2400, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 2500, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 2600, 'y': 500},
+            {'tipo': 'Morcego', 'x': 2700, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 2800, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 2900, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 3000, 'y': 500},
+            {'tipo': 'Morcego', 'x': 3200, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 3300, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 3400, 'y': 500},
+            {'tipo': 'Morcego', 'x': 3500, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 3600, 'y': 500},
+            {'tipo': 'Morcego', 'x': 3700, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 3800, 'y': 500},
+            {'tipo': 'Morcego', 'x': 3900, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 4000, 'y': 500},
+            {'tipo': 'Morcego', 'x': 4200, 'y': 500},
+            {'tipo': 'CarangueijoPirata', 'x': 4300, 'y': 500},
         ]
 
         # Mapeamento de strings para classes de vilões
-        self.classes_viloes = {'CaranguejoPirata': CaranguejoPirata}
+        self.classes_viloes = {
+            'CarangueijoPirata': CarangueijoPirata,
+            'Morcego': Morcego
+        }
 
     # ----------------------------------------------------------------------
     def get_chunk_surface(self, chunk_index):

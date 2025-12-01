@@ -1,5 +1,6 @@
 import pygame as pg
 from mapa import TILE_SIZE
+from utils import IndicadorDano
 import math
 
 class PersonagemBase:
@@ -21,6 +22,10 @@ class PersonagemBase:
         self.vida = vida_max  # vida atual
         self.esta_vivo = True
         self.menu_icon = None
+
+        # Lista para armazenar os indicadores de dano
+        self.indicadores_dano = []
+
         self.skill_icons = []
         self.name = ""
         
@@ -149,6 +154,11 @@ class PersonagemBase:
 
     def receber_dano(self, quantidade):
         """Reduz a vida do personagem e lida com a morte."""
+        # Cria um novo indicador de dano na posição do personagem
+        pos_x, pos_y = self.get_colisor().midtop
+        novo_indicador = IndicadorDano(pos_x, pos_y, quantidade)
+        self.indicadores_dano.append(novo_indicador)
+
         self.vida -= quantidade
         if self.vida <= 0:
             self.vida = 0
@@ -171,6 +181,11 @@ class PersonagemBase:
             self.pos[0] = mapa_obj.map_width - self.colisor[0] - self.colisor_offset[0]
 
     def atualizar(self, mapa):
+        # Atualiza e remove os indicadores de dano que já expiraram
+        for indicador in self.indicadores_dano:
+            indicador.atualizar()
+        self.indicadores_dano = [ind for ind in self.indicadores_dano if ind.duracao_restante > 0]
+
         # --- Aplica gravidade e checa colisão vertical ---
         self.no_chao = False
         self.aplicar_gravidade()
@@ -203,6 +218,10 @@ class PersonagemBase:
         for habilidade in self.habilidades_ativas:
             if hasattr(habilidade, 'draw'):
                 habilidade.draw(janela, offset_x)
+
+        # Desenha os indicadores de dano
+        for indicador in self.indicadores_dano:
+            indicador.desenhar(janela, offset_x)
 
         # Placeholder visual para o ataque (um círculo vermelho)
         if self.atacando:
@@ -297,88 +316,5 @@ class PersonagemBase:
             window.blit(tecla_texto, (x + 5, y + icon_size - 19))
 
 
-
-
-"""
-class Jogador:
-    def __init__(self, x, y):
-        self.pos = [x, y]
-        self.animacao = 0
-        self.frame = 0
-        self.vel_vertical = 0
-        self.gravidade = 1
-        self.forca_pulo = -15
-        self.colisor = [46, 54]
-        self.velocidade = 5
-
-        # --- Animações (Idle) ---
-        self.idle = [pg.transform.scale(pg.image.load(f'./Sprites/Captain Clown Nose/Captain Clown Nose without Sword/01-Idle/Idle 0{i}.png'), (128, 80)) for i in range(1,6)]
-        self.idle_esquerda = [pg.transform.flip(img, True, False) for img in self.idle]
-
-        # --- Correndo (Run) ---
-        self.run_direita = [pg.transform.scale(pg.image.load(f'./Sprites/Captain Clown Nose/Captain Clown Nose without Sword/02-Run/Run 0{i}.png'), (128, 80)) for i in range(1,7)]
-        self.run_esquerda = [pg.transform.flip(img, True, False) for img in self.run_direita]
-
-    # ----------------------------------------------------------
-    def aplicar_gravidade(self):
-        self.vel_vertical += self.gravidade
-        self.pos[1] += self.vel_vertical
-
-    def colisao(self, mapa):
-        pos_x = self.pos[0] + 40
-        pos_y = self.pos[1] + 8
-        box = [[pos_x, pos_y], [pos_x + self.colisor[0], pos_y],
-               [pos_x, pos_y + self.colisor[1]], [pos_x + self.colisor[0], pos_y + self.colisor[1]]]
-        for y in range(len(mapa)):
-            for x in range(len(mapa[0])):
-                if mapa[y][x] != ' ':
-                    for bx, by in box:
-                        if x*64 <= bx <= x*64+64 and y*64 <= by <= y*64+64:
-                            return True
-        return False
-
-    # ----------------------------------------------------------
-    def mover(self, teclas, mapa):
-        movendo = False
-        if teclas[pg.K_a] or teclas[pg.K_LEFT]:
-            self.pos[0] -= self.velocidade
-            if self.colisao(mapa):
-                self.pos[0] += self.velocidade
-            else:
-                self.animacao = 3
-                movendo = True
-        if teclas[pg.K_d] or teclas[pg.K_RIGHT]:
-            self.pos[0] += self.velocidade
-            if self.colisao(mapa):
-                self.pos[0] -= self.velocidade
-            else:
-                self.animacao = 2
-                movendo = True
-        if (teclas[pg.K_SPACE] or teclas[pg.K_w] or teclas[pg.K_UP]) and self.vel_vertical == 0:
-            self.vel_vertical = self.forca_pulo
-
-        if not movendo:
-            if self.animacao == 2: self.animacao = 0
-            if self.animacao == 3: self.animacao = 1
-
-    def atualizar(self, mapa):
-        self.aplicar_gravidade()
-        if self.colisao(mapa):
-            self.pos[1] -= self.vel_vertical
-            self.vel_vertical = 0
-
-    # ----------------------------------------------------------
-    def desenhar(self, janela, offset_x=0):
-        if self.animacao == 0:
-            frames = self.idle
-        elif self.animacao == 1:
-            frames = self.idle_esquerda
-        elif self.animacao == 2:
-            frames = self.run_direita
-        else:
-            frames = self.run_esquerda
-
-        index = (self.frame // 7) % len(frames)
-        janela.blit(frames[index], (self.pos[0] - offset_x, self.pos[1]))
-        self.frame = (self.frame + 1) % (7 * len(frames))
-"""
+    def som_kill(self):
+        pass

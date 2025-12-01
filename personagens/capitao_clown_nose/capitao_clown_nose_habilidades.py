@@ -249,8 +249,8 @@ class TripulanteFantasma:
         self.tempo = 0           # Contador para a função seno
         
         # --- Posição relativa ao jogador ---
-        self.offset_x_base = 80  # Distância horizontal do jogador
-        self.offset_y_base = -60 # Distância vertical (acima da cabeça)
+        self.offset_x_base = 60  # Distância horizontal do jogador
+        self.offset_y_base = -20 # Distância vertical (acima da cabeça)
         
         # --- Atributos para movimento suave (física de mola) ---
         self.vel_x = 0

@@ -1,7 +1,7 @@
 import pygame as pg
 from personagem_base import PersonagemBase
 from config_jogo import CONFIG
-from utils import scale_proporcional
+from utils import scale_proporcional, IndicadorDano
 from .capitao_clown_nose_habilidades import SacoDeMoedas, LapadaSeca, TripulanteFantasma
 
 import random
@@ -9,6 +9,10 @@ import random
 class CapitaoClownNose(PersonagemBase):
     vozes_kill = [
         pg.mixer.Sound(f'./personagens/capitao_clown_nose/sound/voices/kill_{i}.wav')
+        for i in range(1) 
+    ]
+    vozes_hurt = [
+        pg.mixer.Sound(f'./personagens/capitao_clown_nose/sound/voices/hurt_{i}.wav')
         for i in range(1) 
     ]
     vozes_hab1 = [
@@ -28,6 +32,9 @@ class CapitaoClownNose(PersonagemBase):
         # --- Lendo valores do arquivo de configuração ---
         config = CONFIG['personagens']['CapitaoClownNose']
         super().__init__(x, y, velocidade=config['velocidade'], forca_pulo=config['forca_pulo'], vida_max=config['vida_max'])
+
+        # --- Canal de áudio dedicado para as vozes ---
+        self.canal_voz = pg.mixer.Channel(0) # Usaremos o canal 0 para as vozes do capitão
         
         # --- Carrega animações ---
         self.animacoes["idle_direita"] = [pg.transform.scale(pg.image.load(f'./personagens/capitao_clown_nose/sprites/idle/Idle {i}.png'), (128, 80)) for i in range(1,6)]
@@ -62,7 +69,7 @@ class CapitaoClownNose(PersonagemBase):
     def iniciar_habilidade(self, index):
         # Habilidade 1: Saco de Moedas (índice 0)
         if index == 0 and self.cooldowns_habilidades[0] == 0:
-            if random.random() < 0.1: # 10% de chance de tocar a voz
+            if random.random() < 0.03: # 3% de chance de tocar a voz
                 random.choice(self.vozes_hab1).play() # SOM DA HABILIDADE 1
 
             # Define a direção baseada no estado da animação
@@ -110,3 +117,21 @@ class CapitaoClownNose(PersonagemBase):
     def atualizar_habilidades(self, mapa_tiles, viloes=[], camera_x=0):
         # Chama o método da classe base para gerenciar cooldowns
         super().atualizar_habilidades(mapa_tiles, viloes, camera_x)
+
+    
+    def receber_dano(self, quantidade):
+        # Lógica específica do Capitão: tocar som de dor
+        # O método da classe base cuidará de criar o indicador de dano e reduzir a vida.
+        if not self.canal_voz.get_busy():
+            if random.random() < 0.2: # 20% de chance de tocar a voz
+                som_a_tocar = random.choice(self.vozes_hurt)
+                self.canal_voz.play(som_a_tocar) # Toca no canal dedicado
+        return super().receber_dano(quantidade)
+    
+
+    def som_kill(self):
+        # Só toca o som de kill se o canal de voz estiver livre
+        if not self.canal_voz.get_busy():
+            if random.random() < 0.2: # 20% de chance de tocar a voz
+                som_a_tocar = random.choice(self.vozes_kill)
+                self.canal_voz.play(som_a_tocar) # Toca no canal dedicado

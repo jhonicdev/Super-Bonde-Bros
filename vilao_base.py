@@ -2,6 +2,7 @@ import pygame as pg
 from personagem_base import PersonagemBase
 from config_jogo import CONFIG
 from mapa import TILE_SIZE
+import random
 import math
 
 class VilaoBase(PersonagemBase):
@@ -16,6 +17,9 @@ class VilaoBase(PersonagemBase):
         self.raio_deteccao = config_vilao.get('raio_deteccao', 400)
         self.dano_contato = config_vilao.get('dano_contato', 250)
         self.cooldown_ataque = 0   # Cooldown para evitar dano contínuo
+
+        # --- Atributos de Patrulha por Tempo ---
+        self.patrol_timer = random.randint(180, 400) # Tempo para andar em uma direção (3 a ~6.5s)
 
     def tem_linha_de_visao(self, alvo, mapa_tiles):
         """Verifica se há uma linha de visão direta e sem obstáculos até o alvo."""
@@ -71,6 +75,12 @@ class VilaoBase(PersonagemBase):
                 self.estado_animacao = "run_direita"
             else:
                 self.estado_animacao = "run_esquerda"
+            
+            # Patrulha por tempo: vira de direção aleatoriamente
+            self.patrol_timer -= 1
+            if self.patrol_timer <= 0:
+                self.direcao_movimento *= -1
+                self.patrol_timer = random.randint(180, 400)
 
         # --- Movimento e Colisão ---
         dx = self.velocidade * self.direcao_movimento
@@ -99,4 +109,16 @@ class VilaoBase(PersonagemBase):
             self.cooldown_ataque -= 1
 
         # Aplica gravidade e colisão vertical da classe base
-        super().atualizar(mapa_tiles)
+        if self.gravidade > 0:
+            super().atualizar(mapa_tiles)
+
+    def receber_dano(self, quantidade):
+        """Sobrescreve o método da classe base para que vilões não mostrem o indicador de dano."""
+        self.vida -= quantidade
+        if self.vida <= 0:
+            self.vida = 0
+            self.esta_vivo = False
+        # Note que a criação do IndicadorDano foi omitida aqui de propósito.
+
+    def som(self):
+        pass

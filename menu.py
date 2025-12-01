@@ -37,7 +37,7 @@ class MenuInicial:
         # --- Rodapé ---
         footer = self.font_footer.render("Developed by Jônatas Cunha", True, self.white)
         self.window.blit(footer, (484, 700))
-        version = self.font_footer.render("v0.1", True, self.white)
+        version = self.font_footer.render("v1.0", True, self.white)
         self.window.blit(version, (1200, 700))
 
         # --- Personagem selecionado ---

@@ -11,7 +11,6 @@ from personagens.capitao_clown_nose.capitao_clown_nose import CapitaoClownNose
 from personagens.joao_poker.joao_poker import JoaoPoker
 from personagens.dr_pi.dr_pi import DrPI
 from personagens.capitao_clown_nose.capitao_clown_nose_habilidades import SacoDeMoedas
-from viloes.carangueijo_pirata.caranguejo_pirata import CaranguejoPirata
 
 # ---------------------- Inicialização ----------------------
 pg.init()
@@ -162,13 +161,21 @@ while running:
             if vilao.esta_vivo and vilao.get_colisor().colliderect(jogador.get_colisor()):
                 if vilao.cooldown_ataque == 0:
                     jogador.receber_dano(vilao.dano_contato)
+                    vilao.som()
                     vilao.cooldown_ataque = 60 # 1 segundo de invulnerabilidade após o toque
 
         # --- Remoção de Entidades Mortas ---
-        viloes = [v for v in viloes if v.esta_vivo]
+
+        for v in viloes:
+            if not v.esta_vivo:
+                jogador.som_kill()
+                viloes.remove(v)
 
         # --- Checa se o jogador morreu ---
         if not jogador.esta_vivo:
+            # Para todos os sons para evitar que continuem tocando no menu
+            pg.mixer.stop()
+
             tela_atual = "menu" # Volta para o menu se o jogador morrer
             viloes = mapa.carregar_viloes() # Reinicia os vilões para a próxima partida
 
