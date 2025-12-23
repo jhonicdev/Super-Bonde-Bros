@@ -34,7 +34,7 @@ class DadosPersonagens:
                         "icone": "👻",
                         "tipo": "Ativa",
                         "descricao": "Invoca um tripulante fantasma que luta ao seu lado por breves instantes.",
-                        "cooldown": "35s"
+                        "cooldown": "40s"
                     }
                 ],
                 "icone": pg.image.load("./personagens/capitao_clown_nose/sprites/idle/Idle 1.png"),

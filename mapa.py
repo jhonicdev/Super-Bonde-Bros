@@ -6,7 +6,7 @@ CHUNK_SIZE = 10  # Número de tiles por chunk horizontal
 TILE_SIZE = 64   # Tamanho de cada tile
 
 # Importa as classes dos vilões para que o mapa possa criá-los
-from viloes.carangueijo_pirata.carangueijo_pirata import CarangueijoPirata
+from viloes.carangueijo.carangueijo import Carangueijo
 from viloes.morcego.morcego import Morcego
 
 class Mapa:
@@ -62,37 +62,37 @@ class Mapa:
         # --- Dados dos Vilões (específico para este mapa) ---
         # No futuro, isso pode ser carregado de um arquivo de mapa (JSON, TMX, etc.)
         self.dados_viloes = [
-            {'tipo': 'CarangueijoPirata', 'x': 800, 'y': 600},
+            {'tipo': 'Carangueijo', 'x': 800, 'y': 600},
             {'tipo': 'Morcego', 'x': 800, 'y': 450},
             {'tipo': 'Morcego', 'x': 1200, 'y': 400},
-            {'tipo': 'CarangueijoPirata', 'x': 1200, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 1500, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 1200, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 1500, 'y': 500},
             {'tipo': 'Morcego', 'x': 1800, 'y': 450},
-            {'tipo': 'CarangueijoPirata', 'x': 1900, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 1900, 'y': 500},
             {'tipo': 'Morcego', 'x': 2000, 'y': 500},
             {'tipo': 'Morcego', 'x': 2400, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 2500, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 2600, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 2500, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 2600, 'y': 500},
             {'tipo': 'Morcego', 'x': 2700, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 2800, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 2900, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 3000, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 2800, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 2900, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 3000, 'y': 500},
             {'tipo': 'Morcego', 'x': 3200, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 3300, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 3400, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 3300, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 3400, 'y': 500},
             {'tipo': 'Morcego', 'x': 3500, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 3600, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 3600, 'y': 500},
             {'tipo': 'Morcego', 'x': 3700, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 3800, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 3800, 'y': 500},
             {'tipo': 'Morcego', 'x': 3900, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 4000, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 4000, 'y': 500},
             {'tipo': 'Morcego', 'x': 4200, 'y': 500},
-            {'tipo': 'CarangueijoPirata', 'x': 4300, 'y': 500},
+            {'tipo': 'Carangueijo', 'x': 4300, 'y': 500},
         ]
 
         # Mapeamento de strings para classes de vilões
         self.classes_viloes = {
-            'CarangueijoPirata': CarangueijoPirata,
+            'Carangueijo': Carangueijo,
             'Morcego': Morcego
         }
 

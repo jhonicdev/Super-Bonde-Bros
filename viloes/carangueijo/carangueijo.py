@@ -2,10 +2,12 @@ import pygame as pg
 from vilao_base import VilaoBase
 from config_jogo import CONFIG
 
-class CarangueijoPirata(VilaoBase):
+class Carangueijo(VilaoBase):
+    som_ataque = None
+
     def __init__(self, x, y):
         # Configurações específicas deste vilão
-        config = CONFIG['viloes'].get('CarangueijoPirata', {})
+        config = CONFIG['viloes'].get('Carangueijo', {})
         super().__init__(x=x, y=y, velocidade=config['velocidade'], vida_max=config['vida_max'], forca_pulo=config['forca_pulo'])
 
         # --- Sprites ---
@@ -24,3 +26,12 @@ class CarangueijoPirata(VilaoBase):
         largura, altura = self.sprite_direita.get_size()
         self.colisor = [int(largura * 0.8), int(altura * 0.8)]
         self.colisor_offset = [int(largura * 0.1), int(altura * 0.2)]
+
+
+
+        if Carangueijo.som_ataque is None:
+            Carangueijo.som_ataque = pg.mixer.Sound('./viloes/carangueijo/sound/attack.mp3')
+    
+    def som(self):
+        if Carangueijo.som_ataque is not None:
+            Carangueijo.som_ataque.play()

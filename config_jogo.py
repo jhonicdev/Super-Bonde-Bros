@@ -25,14 +25,14 @@ CONFIG = {
                     'distancia_max': 500,
                 },
                 'TripulanteFantasma': {
-                    'cooldown_s': 35,
+                    'cooldown_s': 40,
                     'duracao_s': 13,
                     'raio_deteccao': 600,
                     'cooldown_ataque_s': 0.8,
                     'projetil': {
-                        'dano': 30,
+                        'dano': 25,
                         'velocidade': 6,
-                        'raio': 21,
+                        'raio': 20,
                         'duracao_s': 4,
                     }
                 }
@@ -41,7 +41,7 @@ CONFIG = {
         # Configurações para JoaoPoker e DrPI podem ser adicionadas aqui no futuro.
     },
     'viloes': {
-        'CarangueijoPirata': {
+        'Carangueijo': {
            'velocidade': 1.8,
            'vida_max': 1000,
            'forca_pulo': -18,
