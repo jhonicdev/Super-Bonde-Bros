@@ -48,7 +48,7 @@ class DadosPersonagens:
                     "DEFESA: 🟩🟩🟩🟩🟩🟩🟩",
                     "UTILIDADE: 🟦🟦🟦🟦🟦🟦🟦",
                     "PULO: 🟨🟨🟨🟨🟨🟨🟨",
-                    "VELOCIDADE: 🟧🟧🟧🟧",
+                    "VELOCIDADE: 🟧🟧🟧🟧🟧",
                 ],
                 "habilidades": [
                     {
@@ -83,8 +83,8 @@ class DadosPersonagens:
                     "ATAQUE: 🟥🟥🟥🟥🟥🟥🟥",
                     "DEFESA: 🟩🟩",
                     "UTILIDADE: 🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦",
-                    "PULO: 🟨🟨🟨🟨",
-                    "VELOCIDADE: 🟧🟧🟧🟧🟧🟧🟧🟧🟧",
+                    "PULO: 🟨🟨🟨🟨🟨",
+                    "VELOCIDADE: 🟧🟧🟧🟧🟧🟧🟧🟧🟧🟧",
                 ],
                 "habilidades": [
                     {
@@ -109,7 +109,7 @@ class DadosPersonagens:
                         "cooldown": "50s"
                     }
                 ],
-                "icone": pg.image.load(f'./personagens/dr_pi/sprites/idle/dilma.png'),
-                "imagem": pg.image.load(f'./personagens/dr_pi/sprites/idle/dilma.png')
+                "icone": pg.image.load("./personagens/dr_pi/sprites/idle/Idle 1.png"),
+                "imagem": pg.image.load("./personagens/dr_pi/sprites/idle/Idle 1.png")
             }
         ]

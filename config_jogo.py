@@ -38,6 +38,37 @@ CONFIG = {
                 }
             }
         },
+        'DrPI': {
+            'velocidade': 3.9,
+            'forca_pulo': -21,
+            'vida_max': 2200,
+            'habilidades': {
+                'SacoDeMoedas': {
+                    'cooldown_s': 0.5,
+                    'dano': 200,
+                    'velocidade': 10,
+                },
+                'LapadaSeca': {
+                    'cooldown_s': 15,
+                    'dano': 450,
+                    'velocidade': 8,
+                    'velocidade_rotacao': 30,
+                    'distancia_max': 500,
+                },
+                'TripulanteFantasma': {
+                    'cooldown_s': 40,
+                    'duracao_s': 13,
+                    'raio_deteccao': 600,
+                    'cooldown_ataque_s': 0.8,
+                    'projetil': {
+                        'dano': 25,
+                        'velocidade': 6,
+                        'raio': 20,
+                        'duracao_s': 4,
+                    }
+                }
+            }
+        },
         # Configurações para JoaoPoker e DrPI podem ser adicionadas aqui no futuro.
     },
     'viloes': {

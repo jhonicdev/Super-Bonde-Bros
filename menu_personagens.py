@@ -38,7 +38,7 @@ class TelaPersonagens:
             pg.draw.rect(self.window, color, rect, border_radius=12)
 
             # Ícone centralizado
-            icon = scale_proporcional(p["icone"], 180, 120)
+            icon = scale_proporcional(p["icone"], 240, 160)
             self.window.blit(icon, icon.get_rect(center=(rect.centerx, rect.centery - 20)))
 
             # Nome do personagem

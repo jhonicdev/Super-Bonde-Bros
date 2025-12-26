@@ -76,6 +76,7 @@ while running:
                 res = menu.checar_clique(pos)
                 if res == "start" and not jogador is None:
                     tela_atual = "jogo"
+                    pg.mixer.music.stop()
                 elif res == "personagens":
                     tela_atual = "personagens"
                 elif res == "config":
@@ -175,6 +176,7 @@ while running:
         if not jogador.esta_vivo:
             # Para todos os sons para evitar que continuem tocando no menu
             pg.mixer.stop()
+            config.aplicar_musica()
 
             tela_atual = "menu" # Volta para o menu se o jogador morrer
             viloes = mapa.carregar_viloes() # Reinicia os vilões para a próxima partida
