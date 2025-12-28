@@ -21,11 +21,9 @@ class TelaConfiguracoes:
         # Opções de música
         self.musicas = [
             {"titulo": "NENHUMA", "autor": "", "arquivo": None},
-            {"titulo": "Inquilino das Prisões", "autor": "Edson Gomes", "arquivo": "./Musics/Inquilino das Prisões.mp3"},
             {"titulo": "Saudação à Mandioca", "autor": "Dilma, Timbu Fun", "arquivo": "./Musics/Saudação à Mandioca (Remix).mp3"},
-            {"titulo": "Mosquita", "autor": "Dilma, Timbu Fun", "arquivo": "./Musics/Mosquita (Remix).mp3"},
+            {"titulo": "Inquilino das Prisões", "autor": "Edson Gomes", "arquivo": "./Musics/Inquilino das Prisões.mp3"},
             {"titulo": "Só Quero Dinheiro (Não Quero Amar)", "autor": "Tim Maia, Estragona - Lado B", "arquivo": "./Musics/Só Quero Dinheiro (Remix).mp3"},
-            {"titulo": "Dúvidas", "autor": "Chitãozinho & Xororó, NotCami Speedruns", "arquivo": "./Musics/Evidências (Remix).mp3"},
         ]
         self.indice_musica = 1
 

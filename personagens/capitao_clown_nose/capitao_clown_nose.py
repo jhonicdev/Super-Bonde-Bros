@@ -79,7 +79,7 @@ class CapitaoClownNose(PersonagemBase):
             pos_x, pos_y = self.get_colisor().center
 
             # Cria e adiciona o projétil à lista
-            novo_projetil = SacoDeMoedas(pos_x, pos_y, direcao)
+            novo_projetil = SacoDeMoedas(pos_x, pos_y, direcao, self)
             self.habilidades_ativas.append(novo_projetil)
 
             # Define o COOLDOWN

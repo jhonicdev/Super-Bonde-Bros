@@ -2,6 +2,89 @@ import pygame as pg
 from mapa import TILE_SIZE
 from config_jogo import CONFIG
 import math
+import random
+
+class EfeitoMoedas:
+    def __init__(self, x, y):
+        self.particulas = []
+        self.tempo_vida = 30
+        font = pg.font.SysFont("Segoe UI Emoji", 10, bold=True)
+        
+        for _ in range(5):
+            simb = "🪙"
+            vx = random.uniform(-3, 3)
+            vy = random.uniform(-5, -2)
+            surf = font.render(simb, True, (255, 215, 0))
+            self.particulas.append({'x': x, 'y': y, 'vx': vx, 'vy': vy, 'surf': surf})
+
+    def update(self, **kwargs):
+        self.tempo_vida -= 1
+        for p in self.particulas:
+            p['x'] += p['vx']
+            p['y'] += p['vy']
+            p['vy'] += 0.25 # Gravidade
+
+    def draw(self, window, camera_x):
+        if self.tempo_vida <= 0: return
+        alpha = int(255 * (self.tempo_vida / 30))
+        for p in self.particulas:
+            p['surf'].set_alpha(alpha)
+            window.blit(p['surf'], (p['x'] - camera_x, p['y']))
+            
+    @property
+    def ativo(self): return self.tempo_vida > 0
+
+class EfeitoImpactoAncora:
+    def __init__(self, x, y):
+        self.particulas = []
+        self.tempo_vida = 20
+        for _ in range(8):
+            vx = random.uniform(-5, 5)
+            vy = random.uniform(-5, 5)
+            cor = (200, 200, 200) if random.random() > 0.5 else (255, 255, 255)
+            self.particulas.append({'x': x, 'y': y, 'vx': vx, 'vy': vy, 'cor': cor})
+
+    def update(self, **kwargs):
+        self.tempo_vida -= 1
+        for p in self.particulas:
+            p['x'] += p['vx']
+            p['y'] += p['vy']
+
+    def draw(self, window, camera_x):
+        if self.tempo_vida <= 0: return
+        for p in self.particulas:
+            pg.draw.circle(window, p['cor'], (p['x'] - camera_x, p['y']), 3)
+
+    @property
+    def ativo(self): return self.tempo_vida > 0
+
+class EfeitoImpactoFantasma:
+    def __init__(self, x, y):
+        self.particulas = []
+        self.tempo_vida = 25
+        for _ in range(6):
+            vx = random.uniform(-2, 2)
+            vy = random.uniform(-2, 2)
+            raio = random.randint(5, 10)
+            self.particulas.append({'x': x, 'y': y, 'vx': vx, 'vy': vy, 'raio': raio})
+
+    def update(self, **kwargs):
+        self.tempo_vida -= 1
+        for p in self.particulas:
+            p['x'] += p['vx']
+            p['y'] += p['vy']
+            p['raio'] *= 0.9
+
+    def draw(self, window, camera_x):
+        if self.tempo_vida <= 0: return
+        alpha = int(255 * (self.tempo_vida / 25))
+        surf = pg.Surface((20, 20), pg.SRCALPHA)
+        pg.draw.circle(surf, (100, 255, 255, alpha), (10, 10), 10)
+        for p in self.particulas:
+            window.blit(pg.transform.scale(surf, (int(p['raio']*2), int(p['raio']*2))), (p['x'] - camera_x - p['raio'], p['y'] - p['raio']))
+
+    @property
+    def ativo(self): return self.tempo_vida > 0
 
 class SacoDeMoedas:
     ANIMACAO = None  # Atributo de classe para guardar a animação pré-carregada
@@ -32,12 +115,13 @@ class SacoDeMoedas:
                 )
             ]
 
-    def __init__(self, x, y, direcao):
+    def __init__(self, x, y, direcao, jogador):
         """
         Inicializa o projétil.
         x, y: Posição inicial.
         direcao: 1 para direita, -1 para esquerda.
         """
+        self.jogador = jogador
         self.animacao = SacoDeMoedas.ANIMACAO
         # Vira a imagem se a direção for para a esquerda
         if direcao == -1:
@@ -69,6 +153,7 @@ class SacoDeMoedas:
         """Chamado quando a habilidade acerta um alvo."""
         alvo.receber_dano(self.dano)
         self.som_colisao_moedas.play()
+        self.jogador.habilidades_ativas.append(EfeitoMoedas(self.rect.centerx, self.rect.centery))
 
     def update(self, mapa_tiles, **kwargs): # Adicionado **kwargs para ignorar argumentos extras
         """Move o projétil, atualiza sua animação e checa colisão com o mapa."""
@@ -87,6 +172,7 @@ class SacoDeMoedas:
         if 0 <= tile_y < len(mapa_tiles) and 0 <= tile_x < len(mapa_tiles[0]) and mapa_tiles[tile_y][tile_x] != ' ':
             self.som_colisao_moedas.play() # SOM DO SACO DE MOEDAS COLIDINDO
             self.ativo = False # Desativa o projétil ao colidir
+            self.jogador.habilidades_ativas.append(EfeitoMoedas(self.rect.centerx, self.rect.centery))
 
     def draw(self, janela, offset_x):
         """Desenha o projétil na tela, ajustado pela câmera."""
@@ -139,6 +225,7 @@ class LapadaSeca:
             alvo.receber_dano(self.dano)
             self.som_ancora_colisao.play()
             self.alvos_acertados.append(alvo)
+            self.jogador.habilidades_ativas.append(EfeitoImpactoAncora(self.rect.centerx, self.rect.centery))
 
 
     def update(self, mapa_tiles, **kwargs): # Adicionado **kwargs para ignorar argumentos extras
@@ -176,6 +263,7 @@ class LapadaSeca:
             if self.estado == "ida": self.som_ancora_colisao.play() # SOM DE ANCORA COLIDINDO
             if self.estado == "ida":
                 self.estado = "volta" # Ao bater na parede, começa a voltar
+                self.jogador.habilidades_ativas.append(EfeitoImpactoAncora(self.rect.centerx, self.rect.centery))
                 self.alvos_acertados.clear() # Limpa alvos para poder acertá-los na volta
 
 
@@ -192,7 +280,8 @@ class ProjetilFantasma:
 
 
     """Um projétil espectral disparado pelo TripulanteFantasma."""
-    def __init__(self, x, y, alvo_x, alvo_y):
+    def __init__(self, x, y, alvo_x, alvo_y, jogador):
+        self.jogador = jogador
         self.config = CONFIG['personagens']['CapitaoClownNose']['habilidades']['TripulanteFantasma']['projetil']
 
         # Cria o rect de colisão com base no raio definido no config
@@ -208,7 +297,14 @@ class ProjetilFantasma:
         dist = max(1, math.hypot(dx, dy))
         self.vel_x = (dx / dist) * self.config['velocidade']
         self.vel_y = (dy / dist) * self.config['velocidade']
+        self.alvos_acertados = []
 
+    def acertou_alvo(self, alvo):
+        """Chamado quando acerta um inimigo"""
+        if alvo not in self.alvos_acertados:
+            alvo.receber_dano(self.dano)
+            self.jogador.habilidades_ativas.append(EfeitoImpactoFantasma(self.rect.centerx, self.rect.centery))
+            self.alvos_acertados.append(alvo)
 
     def update(self, mapa_tiles, **kwargs): # Aceita argumentos extras para não quebrar
         self.rect.x += self.vel_x
@@ -223,6 +319,7 @@ class ProjetilFantasma:
         tile_y = int(self.rect.centery / TILE_SIZE)
         if 0 <= tile_y < len(mapa_tiles) and 0 <= tile_x < len(mapa_tiles[0]) and mapa_tiles[tile_y][tile_x] != ' ':
             self.ativo = False
+            self.jogador.habilidades_ativas.append(EfeitoImpactoFantasma(self.rect.centerx, self.rect.centery))
 
     def draw(self, janela, offset_x):
         # Desenha um círculo simples como projétil
@@ -316,7 +413,7 @@ class TripulanteFantasma:
                     if vilao.esta_vivo and math.hypot(vilao.get_colisor().centerx - self.rect.centerx, vilao.get_colisor().centery - self.rect.centery) < self.raio_deteccao:
                         if self.tem_linha_de_visao(vilao, mapa_tiles):
                             alvo_x, alvo_y = vilao.get_colisor().center
-                            novo_projetil = ProjetilFantasma(self.rect.centerx, self.rect.centery, alvo_x, alvo_y)
+                            novo_projetil = ProjetilFantasma(self.rect.centerx, self.rect.centery, alvo_x, alvo_y, self.jogador)
                             jogador.habilidades_ativas.append(novo_projetil)
                             self.cooldown_ataque = self.cooldown_ataque_max
                             break

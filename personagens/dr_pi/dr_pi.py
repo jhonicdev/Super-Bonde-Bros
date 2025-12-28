@@ -3,7 +3,7 @@ from personagem_base import PersonagemBase
 from utils import scale_proporcional
 from config_jogo import CONFIG
 
-# from .dr_pi_habilidades import * # Futuras habilidades serão importadas aqui
+from .dr_pi_habilidades import Trigonometricamente, ProjetilPi, ProtecaoObmepica
 
 class DrPI(PersonagemBase):
     def __init__(self, x, y):
@@ -25,14 +25,67 @@ class DrPI(PersonagemBase):
 
         # --- Atributos específicos ---
         self.name = "Dr. PI"
-        self.cooldowns_habilidades = [0] * 3
+        self.cooldowns_habilidades = [0] * 3 # 3 slots de habilidade ativa
 
         # --- Colisor ---
         largura, altura = self.animacoes["idle_direita"][0].get_size()
         self.colisor = [int(largura * 0.2), int(altura * 0.6)]
         self.colisor_offset = [int(largura * 0.4), int(altura * 0.2)]
 
+        # --- Habilidades ---
+        self.hab_trigonometria = Trigonometricamente()
+        self.hab_obmep = ProtecaoObmepica()
+
         # --- Ícones de Habilidades (placeholders) ---
-        self.skill_icons = [pg.Surface((70, 70)) for _ in range(3)] # Ícones pretos vazios
-        for icon in self.skill_icons:
-            icon.fill((20, 20, 20))
+        font_icon = pg.font.SysFont("Segoe UI Emoji", 45)
+        font_pi = pg.font.SysFont("Times New Roman", 50, bold=True) # Fonte matemática para o Pi
+        
+        # Carrega ícone da OBMEP para o HUD
+        try:
+            img_obmep = pg.image.load('./personagens/dr_pi/sprites/abilities/obmep.png').convert_alpha()
+            
+            # Recorta apenas a área visível (remove bordas transparentes)
+            rect_visivel = img_obmep.get_bounding_rect()
+            img_obmep = img_obmep.subsurface(rect_visivel).copy()
+            
+            img_obmep = scale_proporcional(img_obmep, 50, 50)
+        except Exception:
+            img_obmep = font_icon.render("📚", True, (255, 255, 255))
+            
+        self.skill_icons = [
+            font_pi.render("π", True, (255, 255, 255)), # Pi-raio (Ataque Básico)
+            font_icon.render("📈", True, (255, 255, 255)), # Trigonometria
+            img_obmep, # OBMEP
+        ]
+
+    def iniciar_habilidade(self, index):
+        # Verifica cooldown global da classe base
+        if index < len(self.cooldowns_habilidades) and self.cooldowns_habilidades[index] == 0:
+            
+            # Habilidade 1: Pi-raio / Ataque Básico (Índice 0)
+            if index == 0:
+                direcao = 1 if "direita" in self.estado_animacao else -1
+                # Lança do centro do personagem
+                x, y = self.get_colisor().center
+                
+                projetil = ProjetilPi(x, y, direcao, self)
+                self.habilidades_ativas.append(projetil)
+                
+                cd_segundos = CONFIG['personagens']['DrPI']['habilidades']['AtaqueBasico']['cooldown_s']
+                self.cooldowns_habilidades[index] = int(cd_segundos * 60)
+
+            # Habilidade 2: Trigonometria (Índice 1)
+            elif index == 1:
+                self.hab_trigonometria.start(self)
+                self.habilidades_ativas.append(self.hab_trigonometria)
+                
+                # Define o cooldown baseado na config
+                cd_segundos = CONFIG['personagens']['DrPI']['habilidades']['Trigonometria']['cooldown_s']
+                self.cooldowns_habilidades[index] = int(cd_segundos * 60)
+            
+            # Habilidade 3: OBMEP (Índice 2)
+            elif index == 2:
+                self.hab_obmep.start(self)
+                self.habilidades_ativas.append(self.hab_obmep)
+                cd_segundos = CONFIG['personagens']['DrPI']['habilidades']['ProtecaoObmepica']['cooldown_s']
+                self.cooldowns_habilidades[index] = int(cd_segundos * 60)

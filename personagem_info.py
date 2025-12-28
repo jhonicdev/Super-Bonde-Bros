@@ -12,6 +12,7 @@ class TelaInfoPersonagem:
         self.font_title = pg.font.SysFont("Courier New", 60, bold=True)
         self.font_text = pg.font.SysFont("Segoe UI Emoji", 25)
         self.font_hab = pg.font.SysFont("Segoe UI Emoji", 16)
+        self.font_hab_bold = pg.font.SysFont("Segoe UI Emoji", 16, bold=True)
         self.font_emoji_hab = pg.font.SysFont("Segoe UI Emoji", 30) # Fonte para os ícones das habilidades
         self.font_button = pg.font.SysFont("Courier New", 30, bold=True)
         self.clock = pg.time.Clock()
@@ -45,7 +46,7 @@ class TelaInfoPersonagem:
         self.window.blit(descricao, (130, 140))
 
         # Imagem proporcional
-        imagem = scale_proporcional(p["imagem"], 300, 200)
+        imagem = scale_proporcional(p["imagem"], 300, 190)
         img_rect = imagem.get_rect()
 
         # Posiciona o centro da imagem a 20% da largura do modal
@@ -66,20 +67,29 @@ class TelaInfoPersonagem:
 
         for i, habilidade in enumerate(p["habilidades"]):
             # --- Ícone da Habilidade (usando o emoji) ---
-            # Agora lê diretamente da chave 'icone'
-            icon_surf = self.font_emoji_hab.render(habilidade['icone'], True, (220, 220, 220))
-            icon_rect = icon_surf.get_rect(center=(210, 465 + i * 50))
+            icone_dado = habilidade['icone']
+            
+            # Verifica se é uma imagem (Surface) ou texto (String)
+            if isinstance(icone_dado, pg.Surface):
+                icon_surf = icone_dado
+            else:
+                icon_surf = self.font_emoji_hab.render(str(icone_dado), True, (220, 220, 220))
+            
+            gap = i * 55
+
+            icon_rect = icon_surf.get_rect(center=(210, 465 + gap))
             self.window.blit(icon_surf, icon_rect)
 
             # --- Textos da Habilidade ---
-            hab_name = self.font_hab.render(f"{habilidade['nome']}", True, (228, 120, 51))
+            hab_name = self.font_hab_bold.render(f"{habilidade['nome']}", True, (228, 120, 51))
             hab_type = self.font_hab.render(f"{habilidade['tipo']}", True, (0, 0, 255))
             hab_description = self.font_hab.render(f"{habilidade['descricao']}", True, (255, 255, 255))
-            hab_cooldown = self.font_hab.render(f"{habilidade['cooldown']}", True, (255, 255, 0))
-            gap = i * 50
+            hab_cooldown = self.font_hab.render(f"↻ {habilidade['cooldown']}", True, (255, 255, 0))
+            
             self.window.blit(hab_name, (240, 445 + gap))
-            self.window.blit(hab_type, (880, 445 + gap))
-            self.window.blit(hab_cooldown, (1020, 445 + gap))
+            self.window.blit(hab_type, (240 + hab_name.get_width() + 25, 445 + gap))
+            self.window.blit(hab_cooldown, (240 + hab_name.get_width() + hab_type.get_width() + 50, 445 + gap))
+            
             self.window.blit(hab_description, (240, 464 + gap))
 
         # Botões

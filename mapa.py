@@ -8,6 +8,7 @@ TILE_SIZE = 64   # Tamanho de cada tile
 # Importa as classes dos vilões para que o mapa possa criá-los
 from viloes.carangueijo.carangueijo import Carangueijo
 from viloes.morcego.morcego import Morcego
+from viloes.slendytubbie.slendytubbie import Slendytubbie
 
 class Mapa:
     def __init__(self):
@@ -19,12 +20,12 @@ class Mapa:
             "                                                                                                                                                                                ",
             "                                                                                                                                                                                ",
             "                                                                                                                                                                                ",
-            "                                                                                                                                                                                ",
-            "                   13 1223                                                                                                                                                      ",
-            "               123 79 45552223                                                                                                                                                  ",
-            "          123  789    45555556                                                                                                                                                  ",
-            "     1223 456         45555556                                                                                                                                                  ",
-            "22222555525552222222225555555522222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
+            "                                            13                                                                                                                                  ",
+            "                   13 1223      13     123  79                                                                                                                                  ",
+            "               123 79 45552223  79  13 789       13                                                                                                                             ",
+            "          123  789    45555556      79           79                                                                                                                             ",
+            "     1223 456         455555553                                                                                                                                                 ",
+            "22222555525552222222225555555552222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222"
         ]
         self.tiles = [list(row) for row in self.tiles]
 
@@ -62,10 +63,7 @@ class Mapa:
         # --- Dados dos Vilões (específico para este mapa) ---
         # No futuro, isso pode ser carregado de um arquivo de mapa (JSON, TMX, etc.)
         self.dados_viloes = [
-            {'tipo': 'Carangueijo', 'x': 800, 'y': 600},
-            {'tipo': 'Morcego', 'x': 800, 'y': 450},
-            {'tipo': 'Morcego', 'x': 1200, 'y': 400},
-            {'tipo': 'Carangueijo', 'x': 1200, 'y': 500},
+            {'tipo': 'Slendytubbie', 'x': 900, 'y': 500},
             {'tipo': 'Carangueijo', 'x': 1500, 'y': 500},
             {'tipo': 'Morcego', 'x': 1800, 'y': 450},
             {'tipo': 'Carangueijo', 'x': 1900, 'y': 500},
@@ -82,6 +80,7 @@ class Mapa:
             {'tipo': 'Carangueijo', 'x': 3400, 'y': 500},
             {'tipo': 'Morcego', 'x': 3500, 'y': 500},
             {'tipo': 'Carangueijo', 'x': 3600, 'y': 500},
+            {'tipo': 'Slendytubbie', 'x': 3650, 'y': 500},
             {'tipo': 'Morcego', 'x': 3700, 'y': 500},
             {'tipo': 'Carangueijo', 'x': 3800, 'y': 500},
             {'tipo': 'Morcego', 'x': 3900, 'y': 500},
@@ -93,7 +92,8 @@ class Mapa:
         # Mapeamento de strings para classes de vilões
         self.classes_viloes = {
             'Carangueijo': Carangueijo,
-            'Morcego': Morcego
+            'Morcego': Morcego,
+            'Slendytubbie': Slendytubbie
         }
 
     # ----------------------------------------------------------------------

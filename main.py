@@ -11,6 +11,7 @@ from personagens.capitao_clown_nose.capitao_clown_nose import CapitaoClownNose
 from personagens.joao_poker.joao_poker import JoaoPoker
 from personagens.dr_pi.dr_pi import DrPI
 from personagens.capitao_clown_nose.capitao_clown_nose_habilidades import SacoDeMoedas
+from personagens.dr_pi.dr_pi_habilidades import ProjetilPi
 
 # ---------------------- Inicialização ----------------------
 pg.init()
@@ -52,6 +53,9 @@ def calcular_camera(jogador):
 running = True
 while running:
     clock.tick(60)
+    
+    # Mostra o FPS no título da janela para você monitorar a performance
+    pg.display.set_caption(f"Super Bonde Bros ({int(clock.get_fps())} FPS)")
     
     # ---------------------- Eventos ----------------------
     for event in pg.event.get():
@@ -132,19 +136,24 @@ while running:
         # A classe base agora lida com passar os vilões para as habilidades
         jogador.atualizar_habilidades(mapa.tiles, viloes, camera_x)
 
-        # --- Atualiza todos os vilões ---
+        # --- OTIMIZAÇÃO: Cria lista apenas com vilões na tela ---
+        # Isso evita checar colisão e desenhar vilões que estão a quilômetros de distância
+        viloes_ativos = []
         for vilao in viloes:
-            # Otimização: Só atualiza vilões que estão perto da tela
             dist_vilao_cam = vilao.pos[0] - camera_x
-            if -200 < dist_vilao_cam < 1280 + 200: # 1280 é a largura da tela
+            # Margem de 200px para garantir que ele já esteja atualizado quando entrar na tela
+            if -200 < dist_vilao_cam < 1280 + 200: 
                 vilao.atualizar(mapa.tiles, jogador)
                 vilao.manter_nos_limites_mapa(mapa)
+                viloes_ativos.append(vilao)
 
         # --- Lógica de Combate e Colisões ---
         # 1. Habilidades do jogador acertando vilões
         for habilidade in jogador.habilidades_ativas:
             if hasattr(habilidade, 'dano'): # Checa se a habilidade pode causar dano
-                for vilao in viloes: # Itera sobre uma cópia para evitar problemas se um vilão morrer
+                # Correção: Projéteis de longo alcance devem acertar inimigos fora da tela.
+                # Checamos contra a lista completa 'viloes' em vez de 'viloes_ativos'.
+                for vilao in viloes:
                     if vilao.esta_vivo and habilidade.rect.colliderect(vilao.get_colisor()):
                         # Se a habilidade tiver um método para lidar com o acerto, use-o
                         if hasattr(habilidade, 'acertou_alvo'):
@@ -153,17 +162,17 @@ while running:
                             vilao.receber_dano(habilidade.dano)
 
                         # Saco de Moedas é destruído, a âncora (LapadaSeca) não.
-                        if isinstance(habilidade, SacoDeMoedas):
+                        if isinstance(habilidade, (SacoDeMoedas, ProjetilPi)):
                             habilidade.ativo = False
                             break # Para de checar outros vilões para esta moeda
 
         # 2. Vilões tocando no jogador
-        for vilao in viloes:
+        for vilao in viloes_ativos: # Usa a lista otimizada
             if vilao.esta_vivo and vilao.get_colisor().colliderect(jogador.get_colisor()):
                 if vilao.cooldown_ataque == 0:
                     jogador.receber_dano(vilao.dano_contato)
                     vilao.som()
-                    vilao.cooldown_ataque = 60 # 1 segundo de invulnerabilidade após o toque
+                    vilao.cooldown_ataque = vilao.cooldown_ataque_max # Usa o cooldown configurado
 
         # --- Remoção de Entidades Mortas ---
 
@@ -199,7 +208,8 @@ while running:
         jogador.desenhar(janela, camera_x)
 
         # --- Desenha todos os vilões ---
-        for vilao in viloes:
+        # Desenha apenas os vilões ativos (que já sabemos que estão na tela)
+        for vilao in viloes_ativos:
             vilao.desenhar(janela, camera_x)
             vilao.draw_world_health_bar(janela, camera_x)
         # Desenha a barra de vida do jogador no topo da tela

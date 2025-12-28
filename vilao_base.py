@@ -17,9 +17,14 @@ class VilaoBase(PersonagemBase):
         self.raio_deteccao = config_vilao.get('raio_deteccao', 400)
         self.dano_contato = config_vilao.get('dano_contato', 250)
         self.cooldown_ataque = 0   # Cooldown para evitar dano contínuo
+        self.cooldown_ataque_max = int(config_vilao.get('cooldown_ataque', 1.0) * 60) # Converte segundos para frames
 
         # --- Atributos de Patrulha por Tempo ---
         self.patrol_timer = random.randint(180, 400) # Tempo para andar em uma direção (3 a ~6.5s)
+
+        # --- Otimização de IA ---
+        self.vendo_jogador = False # Cache da visão
+        self.timer_ia = random.randint(0, 15) # Desincroniza os vilões para não processarem todos no mesmo frame
 
     def tem_linha_de_visao(self, alvo, mapa_tiles):
         """Verifica se há uma linha de visão direta e sem obstáculos até o alvo."""
@@ -56,14 +61,20 @@ class VilaoBase(PersonagemBase):
             return
 
         # --- Lógica de IA: Patrulhar ou Perseguir ---
-        dist_jogador = math.hypot(self.pos[0] - jogador.pos[0], self.pos[1] - jogador.pos[1]) # Distância bruta
+        dist_jogador = math.hypot(self.get_colisor().centerx - jogador.get_colisor().centerx, self.get_colisor().centery - jogador.get_colisor().centery)
         persegue = False
 
+        # --- Otimização: Atualiza a linha de visão apenas a cada 15 frames (4x por segundo) ---
+        self.timer_ia += 1
+        if self.timer_ia >= 15:
+            self.timer_ia = 0
+            self.vendo_jogador = self.tem_linha_de_visao(jogador, mapa_tiles)
+
         # Só persegue se estiver perto E tiver linha de visão
-        if dist_jogador < self.raio_deteccao and self.tem_linha_de_visao(jogador, mapa_tiles):
+        if dist_jogador < self.raio_deteccao and self.vendo_jogador:
             persegue = True
             # Perseguir: move-se na direção do jogador
-            if jogador.pos[0] < self.pos[0]:
+            if jogador.get_colisor().centerx < self.get_colisor().centerx:
                 self.direcao_movimento = -1
                 self.estado_animacao = "run_esquerda"
             else:

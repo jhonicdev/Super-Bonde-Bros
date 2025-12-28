@@ -238,12 +238,13 @@ class PersonagemBase:
             return
 
         # Configurações da barra de vida do vilão
-        largura_barra = self.colisor[0]  # Largura igual à do colisor
+        # A largura varia com a vida máxima, mas nunca é menor que o personagem
+        largura_barra = max(20, int(self.vida_max * 0.04))
         altura_barra = 8
         offset_y = 15  # Distância acima da cabeça do personagem
 
-        # Posição da barra
-        pos_x = self.get_colisor().x - camera_x
+        # Posição da barra (centralizada sobre o personagem)
+        pos_x = (self.get_colisor().centerx - camera_x) - (largura_barra // 2)
         pos_y = self.get_colisor().y - offset_y
 
         # Percentual de vida
@@ -253,6 +254,7 @@ class PersonagemBase:
         # Desenha o fundo da barra e a vida
         pg.draw.rect(window, (80, 0, 0), (pos_x, pos_y, largura_barra, altura_barra))
         pg.draw.rect(window, (200, 0, 0), (pos_x, pos_y, vida_largura_atual, altura_barra))
+
 
     def draw_health_bar(self, window, x=40, y=20, largura=400, altura=70):
         # Percentual de vida
